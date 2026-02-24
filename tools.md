@@ -1,136 +1,175 @@
-description: Defines tool access, ordering, and usage rules for the API Automation Orchestrator.
+description: Complete tool governance configuration for Swagger-driven Playwright automation engine.
 
 ---
 
-# Tool Governance Policy
+# Allowed Tools (Full List)
 
-The agent must use tools in a structured and deterministic order.
+## Browser Control
 
-No tool may be used outside its defined phase.
-
----
-
-# Allowed Tools
-
-## 1. web/fetch
+- /code/openSimpleBrowser
+- playwright-mcp/browser_install
+- playwright-mcp/browser_navigate
+- playwright-mcp/browser_navigate_back
+- playwright-mcp/browser_click
+- playwright-mcp/browser_type
+- playwright-mcp/browser_hover
+- playwright-mcp/browser_drag
+- playwright-mcp/browser_select_option
+- playwright-mcp/browser_file_upload
+- playwright-mcp/browser_handle_dialog
+- playwright-mcp/browser_console_messages
+- playwright-mcp/browser_network_requests
 
 Purpose:
-- Fetch Swagger/OpenAPI JSON from URL.
-
-Mandatory in Step 1 of orchestrator.
+- UI fallback testing
+- Swagger UI scraping (if JSON not directly accessible)
+- UI-based token generation
+- Hybrid UI + API workflows
 
 ---
 
-## 2. read/file
+## Execution Tools
+
+- execute/runTests
+- execute/runTask
+- execute/createAndRunTask
+- execute/testFailure
+- execute/getTerminalOutput
 
 Purpose:
-- Read existing test files.
-- Read previous Swagger snapshot.
-- Read configuration files.
-
-Must always read before editing.
+- Run Playwright
+- Run node tasks
+- Execute CLI commands
+- Handle test failure recovery
+- Inspect terminal output
 
 ---
 
-## 3. edit/editFiles
+## Read Tools
+
+- read/readFile
+- read/problems
+- read/terminalSelection
+- read/terminalLastCommand
+- read/getTaskOutput
 
 Purpose:
-- Create or update:
-  - Test files
-  - Snapshot files
-  - Impact reports
-  - Coverage reports
-  - Flow maps
-
-Never overwrite without reading first.
+- Read existing test files
+- Read Swagger snapshot
+- Inspect compilation errors
+- Inspect test failures
 
 ---
 
-## 4. search
+## Edit Tools
+
+- edit/editFiles
 
 Purpose:
-- Locate existing test files by endpoint name.
-- Detect impacted files during regeneration.
+- Generate test files
+- Regenerate impacted files
+- Create reports
+- Update snapshots
 
 ---
 
-## 5. execute/runTests
+## Search Tools
+
+- search
 
 Purpose:
-- Execute Playwright tests.
-- Trigger CI run.
-
-Must only be used after test generation completes.
+- Locate impacted test files
+- Find schema usage
+- Map endpoint to file
 
 ---
 
-## 6. execute/createAndRunTask
+## Web Tools
+
+- web/fetch
 
 Purpose:
-- Run CLI commands:
-  - npx playwright test
-  - npm install
-  - module load ossjs/node/20.14.0
+- Fetch Swagger/OpenAPI JSON
 
 ---
 
-## 7. read/terminalLastCommand
+# Tool Execution Phases
 
-Purpose:
-- Inspect failure reason after test execution.
+## Phase 1 — Swagger Acquisition
 
-Used only in failure recovery.
+If JSON URL available:
+- Use web/fetch
 
----
-
-# Tool Usage Order (Strict)
-
-Step 1:
-web/fetch
-
-Step 2:
-read/file (load snapshot)
-
-Step 3:
-search (locate impacted tests)
-
-Step 4:
-edit/editFiles (regenerate tests)
-
-Step 5:
-execute/createAndRunTask (run Playwright)
-
-Step 6:
-read/terminalLastCommand (on failure only)
+If only Swagger UI available:
+- openSimpleBrowser
+- browser_navigate
+- browser_network_requests
+- extract JSON
 
 ---
 
-# Tool Restrictions
+## Phase 2 — Snapshot + Diff
 
-- Never fetch Swagger twice in same run.
-- Never edit before reading existing file.
+- read/readFile (load previous snapshot)
+- edit/editFiles (store updated snapshot)
+
+---
+
+## Phase 3 — Dependency Graph
+
+No external tools required (internal logic).
+
+---
+
+## Phase 4 — Regeneration
+
+- search (locate impacted files)
+- read/readFile (inspect existing test)
+- edit/editFiles (regenerate selectively)
+
+---
+
+## Phase 5 — Execution
+
+- execute/createAndRunTask
+- execute/runTests
+
+On failure:
+- read/terminalLastCommand
+- execute/testFailure
+- execute/getTerminalOutput
+
+---
+
+# UI Automation Usage Rules
+
+Browser tools must ONLY be used if:
+
+1. Swagger JSON cannot be fetched directly.
+2. Auth token must be obtained via UI.
+3. Business flow requires UI interaction.
+4. Hybrid validation is required.
+
+Browser tools must NOT be used for pure API testing.
+
+---
+
+# Strict Rules
+
+- Never edit before reading.
 - Never execute tests before regeneration phase completes.
-- Never log secrets from environment variables.
-
----
-
-# Error Recovery Rules
-
-If tests fail due to schema mismatch:
-
-1. Read failure logs.
-2. Re-check Swagger.
-3. Regenerate impacted test only.
-4. Re-run.
-
-Maximum retry cycles: 2.
+- Never fetch Swagger twice in same run.
+- Never expose tokens or DB passwords.
+- Retry only 5xx failures (max 2 times).
 
 ---
 
 # Security Constraints
 
-Never:
-- Print DB passwords
-- Print Bearer tokens
-- Print API keys
-- Commit secrets into test files
+Never log:
+- Bearer tokens
+- API keys
+- DB passwords
+- Session cookies
+
+Mask all sensitive headers in logs.
