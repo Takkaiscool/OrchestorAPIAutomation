@@ -46,17 +46,36 @@ The orchestrator must execute the following steps IN ORDER.
 ---
 ## Tool Dependency Declaration
 
-This orchestrator requires:
+This orchestrator requires the following tool categories:
 
-- web/fetch
-- read/file
-- edit/editFiles
-- search
+Browser Tools:
+- /code/openSimpleBrowser
+- playwright-mcp/*
+
+Execution Tools:
 - execute/runTests
+- execute/runTask
 - execute/createAndRunTask
-- read/terminalLastCommand
+- execute/testFailure
+- execute/getTerminalOutput
 
-Execution must strictly follow tools.md governance.
+Read Tools:
+- read/readFile
+- read/problems
+- read/terminalSelection
+- read/terminalLastCommand
+- read/getTaskOutput
+
+Edit Tools:
+- edit/editFiles
+
+Search Tools:
+- search
+
+Web Tools:
+- web/fetch
+
+All tool usage must follow tools.md governance strictly.
 
 ---
 ## Step 1 — Load Swagger
