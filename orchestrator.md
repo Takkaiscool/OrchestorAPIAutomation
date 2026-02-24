@@ -44,7 +44,21 @@ Optional Inputs:
 The orchestrator must execute the following steps IN ORDER.
 
 ---
+## Tool Dependency Declaration
 
+This orchestrator requires:
+
+- web/fetch
+- read/file
+- edit/editFiles
+- search
+- execute/runTests
+- execute/createAndRunTask
+- read/terminalLastCommand
+
+Execution must strictly follow tools.md governance.
+
+---
 ## Step 1 — Load Swagger
 
 Invoke Swagger Loader Engine.
