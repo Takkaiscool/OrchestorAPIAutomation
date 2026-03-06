@@ -24,6 +24,9 @@ Use environment variables:
 - DB_USER
 - DB_PASSWORD
 - DB_NAME
+- MONGO_URI
+- MONGO_DB_NAME
+- MONGO_COLLECTION_MAP (JSON)
 
 Never hardcode DB credentials.
 
@@ -50,3 +53,13 @@ Ensure record no longer exists OR status flag updated.
 - Tag created data with unique identifier.
 - Clean up test data if required.
 - Avoid corrupting shared environments.
+
+
+# MongoDB Validation Mode
+
+When MongoDB is configured:
+
+- Read seed/reference collections before generating test cases.
+- Use existing valid domain values to build realistic positive scenarios.
+- Build negative scenarios by mutating validated Mongo-driven payloads.
+- Validate authorization-linked entities (roles, scopes, tenant ownership) where present.

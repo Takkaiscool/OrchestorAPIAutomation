@@ -9,6 +9,7 @@ description: Core capabilities for intelligent Swagger-driven API automation usi
 Before generating any test cases or scripts, the agent MUST:
 
 - Load and parse Swagger/OpenAPI specification.
+- If MongoDB configuration is available, load reference collections required for valid test data generation.
 - Extract:
   - All endpoints and HTTP methods
   - Request schemas
@@ -22,6 +23,8 @@ Before generating any test cases or scripts, the agent MUST:
   - Tags and logical groupings
 
 NO test generation is allowed before this analysis completes.
+
+If MongoDB loading is enabled, no test generation is allowed before Mongo data profiling completes.
 
 ---
 
@@ -40,6 +43,13 @@ Never assume authentication type.
 Never hardcode credentials.
 Always use environment variables.
 
+Also enforce authorization mechanisms:
+
+- Detect role/permission scopes from Swagger security definitions and policy metadata.
+- If available, map roles/permissions from MongoDB authorization collections.
+- Generate both allowed-access and denied-access scenarios.
+- Validate expected auth failure semantics (401 unauthenticated, 403 unauthorized).
+
 ---
 
 ## 3. Example-Driven Payload Generation
@@ -47,7 +57,8 @@ Always use environment variables.
 When generating payloads:
 
 1. Prefer Swagger examples.
-2. If examples not present:
+2. If MongoDB seed/reference data exists, use valid domain values from MongoDB.
+3. If examples and MongoDB data are not present:
    - Generate from schema.
    - Populate all required fields.
    - Respect:
@@ -68,6 +79,8 @@ When generating payloads:
 
 Never send null unless schema allows it.
 
+Mongo-derived values must match environment-specific authorization scope.
+
 ---
 
 ## 4. Test Strategy Matrix
@@ -78,6 +91,7 @@ For every endpoint:
 - Negative test
 - Boundary test
 - Authentication test
+- Authorization test (role/permission/tenant constraints)
 - Schema validation
 - Idempotency validation (PUT, DELETE)
 

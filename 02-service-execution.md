@@ -12,6 +12,7 @@ description: Service-specific execution engine and workflow resolution.
    - CRUD flows
    - Business workflows
    - Public vs secured APIs
+   - Authenticated vs authorized access scopes
 
 ---
 
@@ -60,7 +61,7 @@ Generate:
 
 tests/API_Test_Cases.md
 
-| TC_ID | Flow | Endpoint | Method | Scenario | Depends On | Expected | Auth | Status |
+| TC_ID | Flow | Endpoint | Method | Scenario | Depends On | Expected | AuthN | AuthZ | Status |
 
 ---
 
