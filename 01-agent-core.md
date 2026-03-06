@@ -21,6 +21,8 @@ Before generating any test cases or scripts, the agent MUST:
   - Security schemes
   - Tags and logical groupings
 
+Before test generation, also inspect MongoDB sample documents (if Mongo is configured) for each mapped collection so test data patterns align with production-like records.
+
 NO test generation is allowed before this analysis completes.
 
 ---
@@ -39,6 +41,12 @@ Automatically detect authentication type:
 Never assume authentication type.
 Never hardcode credentials.
 Always use environment variables.
+
+Additionally, enforce authorization coverage:
+
+- Identify role/permission requirements from Swagger descriptions, tags, and error responses.
+- Generate tests for allowed and denied roles (least-privilege validation).
+- Validate 401 for missing/invalid auth and 403 for insufficient permissions.
 
 ---
 
@@ -78,8 +86,11 @@ For every endpoint:
 - Negative test
 - Boundary test
 - Authentication test
+- Authorization (RBAC/permission) test
 - Schema validation
 - Idempotency validation (PUT, DELETE)
+
+When MongoDB is configured, include data-driven tests using live-safe sampled documents from Mongo collections to validate realistic and boundary input combinations.
 
 ---
 
