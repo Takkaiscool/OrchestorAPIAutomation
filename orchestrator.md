@@ -164,6 +164,7 @@ Using:
 - Graph output
 - Swagger schema
 - Example payloads
+- MongoDB sampled records (when configured)
 
 Generate:
 
@@ -175,9 +176,11 @@ Include:
 - Negative tests
 - Boundary tests
 - Auth tests
+- Authorization (role/permission) tests
 - Idempotency tests
 - Schema validation tests
 - Flow-based chained tests
+- Mongo data-driven validity tests (when configured)
 
 ---
 
@@ -223,6 +226,7 @@ Do NOT fuzz:
 If DB configuration exists:
 
 - Attach DB validation hooks.
+- If DB type is MongoDB, read collection samples to derive realistic valid test cases.
 - After POST:
   - Validate record exists.
 - After DELETE:
@@ -248,6 +252,7 @@ Generate:
 
 - HTML report
 - Coverage summary
+- Authorization coverage summary
 
 ---
 
