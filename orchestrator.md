@@ -164,6 +164,7 @@ Using:
 - Graph output
 - Swagger schema
 - Example payloads
+- Mongo reference data (when configured)
 
 Generate:
 
@@ -175,6 +176,7 @@ Include:
 - Negative tests
 - Boundary tests
 - Auth tests
+- Authorization tests (role/scope based)
 - Idempotency tests
 - Schema validation tests
 - Flow-based chained tests
@@ -204,8 +206,9 @@ Invoke Payload Generator + Fuzz Engine.
 Actions:
 
 1. Base payload from Swagger example.
-2. If example missing → generate from schema.
-3. Apply fuzz rules based on selected mode:
+2. If Mongo reference data is configured, enrich payloads/params with valid values fetched from MongoDB.
+3. If example missing and Mongo data unavailable → generate from schema.
+4. Apply fuzz rules based on selected mode:
    - Light
    - Medium
    - Aggressive
@@ -223,6 +226,7 @@ Do NOT fuzz:
 If DB configuration exists:
 
 - Attach DB validation hooks.
+- Prefer Mongo reads for pre/post state validation when backing store is MongoDB.
 - After POST:
   - Validate record exists.
 - After DELETE:
