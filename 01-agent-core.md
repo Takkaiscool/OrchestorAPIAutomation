@@ -21,6 +21,11 @@ Before generating any test cases or scripts, the agent MUST:
   - Security schemes
   - Tags and logical groupings
 
+If MongoDB integration is enabled, also inspect sample collections/documents to understand:
+- Real-world field shapes and optionality
+- Valid value patterns used in production-like data
+- Existing authorization ownership fields (tenantId, accountId, role, etc.)
+
 NO test generation is allowed before this analysis completes.
 
 ---
@@ -40,6 +45,12 @@ Never assume authentication type.
 Never hardcode credentials.
 Always use environment variables.
 
+The generated tests must include authorization coverage for secured endpoints:
+- Missing token/key should return unauthorized
+- Invalid token/key should return unauthorized
+- Insufficient role/scope should return forbidden
+- Valid role/scope should succeed
+
 ---
 
 ## 3. Example-Driven Payload Generation
@@ -47,7 +58,11 @@ Always use environment variables.
 When generating payloads:
 
 1. Prefer Swagger examples.
-2. If examples not present:
+2. If examples not present and MongoDB integration exists:
+   - Derive valid baseline payloads from Mongo sample documents.
+   - Preserve business-valid combinations of related fields.
+   - Strip DB-only fields (`_id`, audit fields) unless API accepts them.
+3. If neither Swagger examples nor Mongo samples are present:
    - Generate from schema.
    - Populate all required fields.
    - Respect:
