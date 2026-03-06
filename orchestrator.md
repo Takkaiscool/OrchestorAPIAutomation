@@ -36,6 +36,7 @@ Optional Inputs:
 - Environment name (dev, qa, stage, prod)
 - Fuzz mode (light, medium, aggressive)
 - Regeneration mode (partial, full)
+- Mongo sampling mode (off, sample-only, sample+validate)
 
 ---
 
@@ -93,6 +94,11 @@ Responsibilities:
   - security schemes
   - examples
   - tags
+
+If Mongo connection settings are available:
+- Pull representative sample documents per mapped collection.
+- Infer realistic valid combinations for required business fields.
+- Capture role/ownership attributes used for authorization decisions.
 
 If Swagger fails validation → STOP execution.
 
@@ -164,6 +170,7 @@ Using:
 - Graph output
 - Swagger schema
 - Example payloads
+- Mongo sample data (when configured)
 
 Generate:
 
@@ -175,9 +182,15 @@ Include:
 - Negative tests
 - Boundary tests
 - Auth tests
+- Authorization tests (role/scope/ownership)
 - Idempotency tests
 - Schema validation tests
 - Flow-based chained tests
+
+Rules:
+- Prefer Swagger examples first.
+- Fall back to Mongo samples for valid domain-specific combinations.
+- Fall back to schema synthesis only when neither source is available.
 
 ---
 
@@ -204,7 +217,8 @@ Invoke Payload Generator + Fuzz Engine.
 Actions:
 
 1. Base payload from Swagger example.
-2. If example missing → generate from schema.
+2. If example missing and Mongo sampling enabled → derive payload from Mongo samples.
+3. If both missing → generate from schema.
 3. Apply fuzz rules based on selected mode:
    - Light
    - Medium
@@ -223,12 +237,17 @@ Do NOT fuzz:
 If DB configuration exists:
 
 - Attach DB validation hooks.
+- For MongoDB backends, use collection/document validation checks.
 - After POST:
   - Validate record exists.
 - After DELETE:
   - Validate record removed or flagged.
 - After UPDATE:
   - Validate updated values persisted.
+
+Also validate authorization side effects:
+- Unauthorized writes do not create/modify Mongo records.
+- Forbidden writes are rejected without persistence changes.
 
 If DB config not present:
 - Skip DB validation safely.

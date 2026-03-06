@@ -50,7 +50,7 @@ If Swagger implies sequence:
 
 CreateUser → Login → AccessProfile
 
-Execute full chain and validate state transitions.
+Execute full chain and validate state transitions, including authorization transitions (anonymous → authenticated → role-scoped access).
 
 ---
 
@@ -60,7 +60,7 @@ Generate:
 
 tests/API_Test_Cases.md
 
-| TC_ID | Flow | Endpoint | Method | Scenario | Depends On | Expected | Auth | Status |
+| TC_ID | Flow | Endpoint | Method | Scenario | Depends On | Expected | AuthN | AuthZ | Status |
 
 ---
 
