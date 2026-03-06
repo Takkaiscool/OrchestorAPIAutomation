@@ -24,6 +24,9 @@ Use environment variables:
 - DB_USER
 - DB_PASSWORD
 - DB_NAME
+- MONGO_URI
+- MONGO_DB_NAME
+- MONGO_COLLECTION_MAP
 
 Never hardcode DB credentials.
 
@@ -50,3 +53,17 @@ Ensure record no longer exists OR status flag updated.
 - Tag created data with unique identifier.
 - Clean up test data if required.
 - Avoid corrupting shared environments.
+
+
+# Mongo Validation and Test Data Discovery
+
+When MongoDB is configured:
+
+- Read sample documents to derive valid domain-specific test data.
+- Build positive test cases from existing valid records before synthetic generation.
+- Use role/scope-linked records where available to support authorization test scenarios.
+- Prefer read-only lookups for baseline validation and post-operation verification.
+
+Fallback behavior:
+
+- If Mongo configuration is missing or inaccessible, continue with non-Mongo validation strategy without blocking the run.

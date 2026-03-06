@@ -47,7 +47,8 @@ Always use environment variables.
 When generating payloads:
 
 1. Prefer Swagger examples.
-2. If examples not present:
+2. If Mongo seed/reference data is configured, read valid sample documents from MongoDB before synthetic generation.
+3. If examples not present:
    - Generate from schema.
    - Populate all required fields.
    - Respect:
@@ -68,6 +69,16 @@ When generating payloads:
 
 Never send null unless schema allows it.
 
+### Mongo-Driven Test Data Rules
+
+- If `MONGO_URI`, `MONGO_DB_NAME`, and collection mapping are configured, fetch candidate records that match endpoint domain.
+- Use Mongo values to build realistic positive test payloads, path params, and query params.
+- Preserve data safety:
+  - Use read-only queries for baseline data discovery.
+  - Clone documents before mutation.
+  - Never update/delete production-like seed documents directly.
+- If Mongo data is unavailable, continue with schema-driven synthetic payload generation.
+
 ---
 
 ## 4. Test Strategy Matrix
@@ -78,8 +89,16 @@ For every endpoint:
 - Negative test
 - Boundary test
 - Authentication test
+- Authorization test (role/scope/permission aware)
 - Schema validation
 - Idempotency validation (PUT, DELETE)
+
+Authorization tests must include:
+
+- Valid token with sufficient scope (expect success)
+- Valid token with insufficient scope/role (expect 403)
+- Missing token (expect 401/403 per API spec)
+- Expired/invalid token (expect 401)
 
 ---
 
