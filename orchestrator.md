@@ -18,6 +18,7 @@ This file defines the single execution brain that coordinates:
 - DB validation
 - Playwright execution
 - Reporting
+- JMeter performance plan generation
 
 The user provides ONLY a Swagger/OpenAPI URL.
 
@@ -36,6 +37,7 @@ Optional Inputs:
 - Environment name (dev, qa, stage, prod)
 - Fuzz mode (light, medium, aggressive)
 - Regeneration mode (partial, full)
+- Performance mode (generate JMeter plan for all endpoints)
 
 ---
 
@@ -218,7 +220,25 @@ Do NOT fuzz:
 
 ---
 
-## Step 8 — DB Validation Integration
+## Step 8 — JMeter Performance Plan Generation
+
+Invoke Swagger-to-JMeter Generation Engine when performance mode is requested.
+
+Actions:
+
+- Build a `.jmx` plan for all endpoints found in Swagger.
+- Create samplers per endpoint+method with auth/header support.
+- Use Swagger examples for request bodies, fallback to schema-driven payloads.
+- Add baseline assertions for status code and latency thresholds.
+- Emit artifacts:
+  - `performance/<service>-all-endpoints.jmx`
+  - `performance/README.md`
+
+If generation fails validation (missing endpoint coverage or invalid XML), fail the run with explicit details.
+
+---
+
+## Step 9 — DB Validation Integration
 
 If DB configuration exists:
 
@@ -235,7 +255,7 @@ If DB config not present:
 
 ---
 
-## Step 9 — Test Execution
+## Step 10 — Test Execution
 
 Run Playwright tests.
 
@@ -251,7 +271,7 @@ Generate:
 
 ---
 
-## Step 10 — Reporting
+## Step 11 — Reporting
 
 Generate:
 

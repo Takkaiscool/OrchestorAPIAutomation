@@ -35,11 +35,13 @@ Purpose:
 - execute/createAndRunTask
 - execute/testFailure
 - execute/getTerminalOutput
+- execute/runTask (for JMeter CLI dry-run validation)
 
 Purpose:
 - Run Playwright
 - Run node tasks
 - Execute CLI commands
+- Validate generated JMeter plans (`jmeter -n -t <file>.jmx`)
 - Handle test failure recovery
 - Inspect terminal output
 
@@ -138,6 +140,16 @@ On failure:
 - read/terminalLastCommand
 - execute/testFailure
 - execute/getTerminalOutput
+- execute/runTask (for JMeter CLI dry-run validation)
+
+---
+
+
+## Phase 6 — Performance Plan Generation
+
+- web/fetch (load Swagger)
+- edit/editFiles (write `.jmx` and performance README)
+- execute/runTask (optional JMX syntax dry-run)
 
 ---
 
