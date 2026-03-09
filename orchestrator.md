@@ -17,6 +17,7 @@ This file defines the single execution brain that coordinates:
 - Fuzz testing
 - DB validation
 - Playwright execution
+- JMeter performance plan generation
 - Reporting
 
 The user provides ONLY a Swagger/OpenAPI URL.
@@ -36,6 +37,7 @@ Optional Inputs:
 - Environment name (dev, qa, stage, prod)
 - Fuzz mode (light, medium, aggressive)
 - Regeneration mode (partial, full)
+- Performance plan mode (none, jmeter-only, full-with-jmeter)
 
 ---
 
@@ -251,13 +253,36 @@ Generate:
 
 ---
 
-## Step 10 — Reporting
+## Step 10 — JMeter Performance Plan Generation
+
+Invoke JMeter Performance Generator.
+
+Actions:
+
+- Read Swagger endpoint catalog and dependency hints.
+- Generate `performance/<service-name>-performance.jmx` containing samplers for all eligible endpoints.
+- Parameterize path/query/header values using placeholders or CSV data config.
+- Add baseline assertions:
+  - expected status code
+  - response time threshold
+- Add auth placeholders and optional auth pre-flow sampler if token route exists.
+
+If performance plan mode is `none`:
+- Skip this step safely.
+
+If performance plan mode is `jmeter-only`:
+- Execute steps 1, 4, and 10 only (plus validation/reporting).
+
+---
+
+## Step 11 — Reporting
 
 Generate:
 
 - Swagger_Impact_Report.md
 - Coverage_Summary.md
 - Flow_Execution_Map.md
+- performance/Performance_Test_Plan.md (when JMeter generation enabled)
 
 Include:
 
@@ -268,6 +293,7 @@ Include:
 - DB validations performed
 - Failed endpoints
 - Schema drift summary
+- JMeter samplers generated/skipped summary
 
 ---
 
