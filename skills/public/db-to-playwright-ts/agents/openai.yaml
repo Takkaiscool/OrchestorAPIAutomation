@@ -1,0 +1,4 @@
+interface:
+  display_name: "DB Scripts to Playwright TS"
+  short_description: "Migrate Java/SQL DB validation flows into Playwright TypeScript."
+  default_prompt: "Convert Java JDBC or SQL-driven database validation logic into Playwright TypeScript helpers, fixtures, and assertions."

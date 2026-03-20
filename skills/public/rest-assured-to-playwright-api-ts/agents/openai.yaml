@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rest Assured to Playwright API TS"
+  short_description: "Migrate Rest Assured API tests into Playwright TypeScript."
+  default_prompt: "Convert existing Rest Assured Java API tests into Playwright TypeScript using request fixtures, typed helpers, and Playwright assertions."

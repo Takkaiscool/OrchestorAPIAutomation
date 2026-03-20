@@ -1,0 +1,4 @@
+interface:
+  display_name: "Java Selenium to Playwright TS"
+  short_description: "Migrate Java Selenium UI tests into Playwright TypeScript."
+  default_prompt: "Convert existing Java Selenium tests, page objects, waits, and assertions into idiomatic Playwright TypeScript."
